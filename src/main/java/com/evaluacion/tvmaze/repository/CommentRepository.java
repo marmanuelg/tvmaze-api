@@ -9,6 +9,8 @@ import com.evaluacion.tvmaze.document.Comment;
 
 public interface CommentRepository extends MongoRepository<Comment, String> {
 
+    List<Comment> findByShowIdOrderByCreatedAtDesc(Long showId);
+
     /** Comentarios de varios shows en una sola consulta (evita una consulta por show). */
     List<Comment> findByShowIdInOrderByCreatedAtDesc(Collection<Long> showIds);
 }

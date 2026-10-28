@@ -35,6 +35,15 @@ public class CommentService {
     }
 
     /**
+     * Comentarios de un show, del más reciente al más antiguo.
+     */
+    public List<CommentResponse> findCommentsByShowId(long showId) {
+        return commentRepository.findByShowIdOrderByCreatedAtDesc(showId).stream()
+                .map(CommentResponse::from)
+                .toList();
+    }
+
+    /**
      * Comentarios agrupados por id de show, del más reciente al más antiguo.
      * Los shows sin comentarios no aparecen en el mapa.
      */
