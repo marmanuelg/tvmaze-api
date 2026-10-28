@@ -8,7 +8,11 @@ import org.springframework.context.MessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.method.ParameterErrors;
 import org.springframework.web.ErrorResponse;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -46,12 +50,29 @@ public class GlobalExceptionHandler {
         return build(HttpStatus.BAD_REQUEST, "Falta el parámetro obligatorio '" + ex.getParameterName() + "'");
     }
 
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ApiError> handleInvalidBody(MethodArgumentNotValidException ex) {
+        List<String> details = ex.getBindingResult().getFieldErrors().stream()
+                .map(FieldError::getDefaultMessage)
+                .toList();
+        return build(HttpStatus.BAD_REQUEST, "Datos inválidos", details);
+    }
+
     @ExceptionHandler(HandlerMethodValidationException.class)
     public ResponseEntity<ApiError> handleMethodValidation(HandlerMethodValidationException ex) {
-        List<String> details = ex.getAllErrors().stream()
-                .map(MessageSourceResolvable::getDefaultMessage)
+        // Cuando el método valida varios parámetros (p. ej. @Positive en la ruta y @Valid en el cuerpo),
+        // Spring agrupa todos los errores en esta excepción.
+        List<String> details = ex.getAllValidationResults().stream()
+                .flatMap(result -> result instanceof ParameterErrors errors
+                        ? errors.getFieldErrors().stream().map(FieldError::getDefaultMessage)
+                        : result.getResolvableErrors().stream().map(MessageSourceResolvable::getDefaultMessage))
                 .toList();
-        return build(HttpStatus.BAD_REQUEST, "Parámetros inválidos", details);
+        return build(HttpStatus.BAD_REQUEST, "Datos inválidos", details);
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ApiError> handleUnreadableBody(HttpMessageNotReadableException ex) {
+        return build(HttpStatus.BAD_REQUEST, "El cuerpo de la petición no es un JSON válido o tiene tipos incorrectos");
     }
 
     @ExceptionHandler(Exception.class)
