@@ -1,0 +1,16 @@
+server:
+  port: ${PORT:8080}
+
+spring:
+  application:
+    name: tvmaze-api
+  jackson:
+    deserialization:
+      # Evita que un rating como 4.5 se convierta silenciosamente en 4
+      accept-float-as-int: false
+
+tvmaze:
+  api:
+    base-url: https://api.tvmaze.com
+    connect-timeout: 5s
+    read-timeout: 10s
