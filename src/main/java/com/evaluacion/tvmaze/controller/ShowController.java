@@ -1,0 +1,33 @@
+package com.evaluacion.tvmaze.controller;
+
+import java.util.List;
+
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.evaluacion.tvmaze.dto.ShowSummaryResponse;
+import com.evaluacion.tvmaze.service.ShowService;
+
+import jakarta.validation.constraints.NotBlank;
+
+@RestController
+@RequestMapping("/api/shows")
+public class ShowController {
+
+    private final ShowService showService;
+
+    public ShowController(ShowService showService) {
+        this.showService = showService;
+    }
+
+    /**
+     * Busca shows por nombre. Ejemplo: {@code GET /api/shows/search?search_query=girls}
+     */
+    @GetMapping("/search")
+    public List<ShowSummaryResponse> searchShows(
+            @RequestParam("search_query") @NotBlank String searchQuery) {
+        return showService.searchShows(searchQuery.trim());
+    }
+}
