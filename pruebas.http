@@ -1,0 +1,26 @@
+### A. Búsqueda
+GET http://localhost:8080/api/shows/search?search_query=girls
+
+### B. Show por id (usa la caché de Mongo)
+GET http://localhost:8080/api/shows/139
+
+### C. Guardar comentario
+POST http://localhost:8080/api/shows/139/comments
+Content-Type: application/json
+
+{
+  "comment": "Muy buena serie",
+  "rating": 5
+}
+
+### Error: rating fuera de rango (debe responder 400)
+POST http://localhost:8080/api/shows/139/comments
+Content-Type: application/json
+
+{
+  "comment": "Prueba",
+  "rating": 8
+}
+
+### Error: show inexistente (debe responder 404)
+GET http://localhost:8080/api/shows/999999999
