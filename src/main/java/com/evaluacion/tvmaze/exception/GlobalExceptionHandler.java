@@ -62,7 +62,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiError> handleMethodValidation(HandlerMethodValidationException ex) {
         // Cuando el método valida varios parámetros (p. ej. @Positive en la ruta y @Valid en el cuerpo),
         // Spring agrupa todos los errores en esta excepción.
-        List<String> details = ex.getAllValidationResults().stream()
+        List<String> details = ex.getParameterValidationResults().stream()
                 .flatMap(result -> result instanceof ParameterErrors errors
                         ? errors.getFieldErrors().stream().map(FieldError::getDefaultMessage)
                         : result.getResolvableErrors().stream().map(MessageSourceResolvable::getDefaultMessage))

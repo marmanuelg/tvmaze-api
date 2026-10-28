@@ -6,7 +6,7 @@ Permite buscar shows, consultar un show por id (con caché en MongoDB) y guardar
 ## Tecnologías
 
 - Java 17
-- Spring Boot 3.3 (Web, Validation, Data MongoDB)
+- Spring Boot 3.5 (Web, Validation, Data MongoDB)
 - `RestClient` de Spring para consumir TV Maze
 - MongoDB Atlas
 - JUnit 5, Mockito y MockMvc para pruebas
