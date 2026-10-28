@@ -4,6 +4,9 @@ server:
 spring:
   application:
     name: tvmaze-api
+  config:
+    # Permite definir MONGODB_URI en un archivo .env en la raíz del proyecto (no se sube a Git)
+    import: optional:file:.env[.properties]
   data:
     mongodb:
       # Cadena de conexión de MongoDB Atlas. Se lee de la variable de entorno MONGODB_URI
