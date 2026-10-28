@@ -13,6 +13,7 @@ import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.HandlerMethodValidationException;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import com.evaluacion.tvmaze.dto.ApiError;
 
@@ -28,6 +29,16 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiError> handleTvMazeError(TvMazeApiException ex) {
         log.error("Error al consumir TV Maze: {}", ex.getMessage(), ex);
         return build(HttpStatus.BAD_GATEWAY, "El servicio de TV Maze no está disponible en este momento");
+    }
+
+    @ExceptionHandler(ShowNotFoundException.class)
+    public ResponseEntity<ApiError> handleShowNotFound(ShowNotFoundException ex) {
+        return build(HttpStatus.NOT_FOUND, ex.getMessage());
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<ApiError> handleTypeMismatch(MethodArgumentTypeMismatchException ex) {
+        return build(HttpStatus.BAD_REQUEST, "El valor '" + ex.getValue() + "' no es válido para '" + ex.getName() + "'");
     }
 
     @ExceptionHandler(MissingServletRequestParameterException.class)
