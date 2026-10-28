@@ -15,9 +15,11 @@ import com.evaluacion.tvmaze.dto.ShowSummaryResponse;
 public class ShowService {
 
     private final TvMazeClient tvMazeClient;
+    private final ShowCacheService showCacheService;
 
-    public ShowService(TvMazeClient tvMazeClient) {
+    public ShowService(TvMazeClient tvMazeClient, ShowCacheService showCacheService) {
         this.tvMazeClient = tvMazeClient;
+        this.showCacheService = showCacheService;
     }
 
     public List<ShowSummaryResponse> searchShows(String query) {
@@ -29,7 +31,7 @@ public class ShowService {
     }
 
     public Map<String, Object> getShowById(long showId) {
-        return tvMazeClient.getShowById(showId);
+        return showCacheService.getShow(showId);
     }
 
     private ShowSummaryResponse toSummary(TvMazeShow show) {
